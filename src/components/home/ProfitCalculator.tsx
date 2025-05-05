@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -8,9 +8,34 @@ const ProfitCalculator = () => {
   const [betAmount, setBetAmount] = useState<number>(100);
   const [odds, setOdds] = useState<number>(1.5);
   const [profit, setProfit] = useState<number | null>(null);
+  const [totalReturn, setTotalReturn] = useState<number | null>(null);
 
+  // Handle bet amount changes
+  const handleBetAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    if (!isNaN(value) && value >= 0) {
+      setBetAmount(value);
+    } else {
+      setBetAmount(0);
+    }
+  };
+
+  // Handle odds changes
+  const handleOddsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    if (!isNaN(value) && value >= 1) {
+      setOdds(value);
+    } else {
+      setOdds(1);
+    }
+  };
+
+  // Calculate both profit and total return
   const calculateProfit = () => {
-    const calculatedProfit = betAmount * odds - betAmount;
+    const calculatedTotalReturn = betAmount * odds;
+    const calculatedProfit = calculatedTotalReturn - betAmount;
+    
+    setTotalReturn(calculatedTotalReturn);
     setProfit(calculatedProfit);
   };
 
@@ -39,8 +64,9 @@ const ProfitCalculator = () => {
                 <Input
                   id="bet-amount"
                   type="number"
+                  min="0"
                   value={betAmount}
-                  onChange={(e) => setBetAmount(Number(e.target.value))}
+                  onChange={handleBetAmountChange}
                   className="bg-sport-blue-dark/80 border-gray-600 text-gray-300"
                 />
               </div>
@@ -53,18 +79,28 @@ const ProfitCalculator = () => {
                   id="odds"
                   type="number"
                   step="0.01"
+                  min="1"
                   value={odds}
-                  onChange={(e) => setOdds(Number(e.target.value))}
+                  onChange={handleOddsChange}
                   className="bg-sport-blue-dark/80 border-gray-600 text-gray-300"
                 />
               </div>
 
               {profit !== null && (
-                <div className="mt-6 p-4 rounded-lg neo-blur animate-pulse-light">
-                  <p className="text-center text-gray-300">Потенциальный выигрыш:</p>
-                  <p className="text-center text-2xl font-bold text-sport-accent">
-                    {profit.toFixed(2)} ₽
-                  </p>
+                <div className="mt-6 space-y-3">
+                  <div className="p-4 rounded-lg neo-blur">
+                    <p className="text-center text-gray-300">Чистая прибыль:</p>
+                    <p className="text-center text-2xl font-bold text-sport-accent">
+                      {profit.toFixed(2)} ₽
+                    </p>
+                  </div>
+                  
+                  <div className="p-4 rounded-lg neo-blur">
+                    <p className="text-center text-gray-300">Общий возврат:</p>
+                    <p className="text-center text-2xl font-bold text-gray-200">
+                      {totalReturn !== null ? totalReturn.toFixed(2) : "0.00"} ₽
+                    </p>
+                  </div>
                 </div>
               )}
             </CardContent>
