@@ -7,6 +7,7 @@ import UpcomingMatches from "@/components/home/UpcomingMatches";
 import Tools from "@/components/home/Tools";
 import Stats from "@/components/home/Stats";
 import Pricing from "@/components/home/Pricing";
+import ProfitCalculator from "@/components/home/ProfitCalculator";
 
 const Index = () => {
   return (
@@ -14,6 +15,7 @@ const Index = () => {
       <Header />
       <main>
         <Hero />
+        <ProfitCalculator />
         <UpcomingMatches />
         <Tools />
         <Stats />
